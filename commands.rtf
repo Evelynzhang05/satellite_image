@@ -1,0 +1,44 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2576
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgray\c0;}
+\margl1440\margr1440\vieww28200\viewh16240\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \CocoaLigature0 # Tensorflow Training Commands\
+\
+# Run this if face errors in models direcctory (not object detection)\
+export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim\
+\
+# Convert XML to CSV\
+python xml_to_csv.py\
+\
+# Create TF Record (Train and Test)\
+python3 generate_tfrecord.py --csv_input=data/train_labels.csv --image_dir=train --output_path=data/train.record\
+python3 generate_tfrecord.py --csv_input=data/test_labels.csv --image_dir=test --output_path=data/test.record\
+\
+\
+\
+python3 model_main_tf2.py --logtostderr --pipeline_config_path=faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/pipeline.config --model_dir=faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/checkpoint/\
+\
+# Output Graph\
+python3 exporter_main_v2.py --input_type=image_tensor --pipeline_config_path=faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/pipeline.config --trained_checkpoint_dir=faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/checkpoint --output_directory=output_graph/\
+\
+Navigation:\
+cd /Users/chunyuzhang/Desktop/Thinkful_git/satellite_image/models/research/object_detection/\
+\
+tensorboard --logdir=faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/\
+\
+\pard\pardeftab720\partightenfactor0
+\
+\
+Eval\
+\
+python3 model_main_tf2.py --alsologtostderr --run_once --checkpoint_dir=faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/checkpoint --model_dir=eval_dir/ --pipeline_config_path=faster_rcnn_resnet50_v1_640x640_coco17_tpu-8/pipeline.config\
+\
+\
+\
+python3 model_main_tf2.py --alsologtostderr --run_once --checkpoint_dir=faster_rcnn_resnet50_v1_1024x1024_coco17_tpu-8/checkpoint --model_dir=eval_dir2/ --pipeline_config_path=faster_rcnn_resnet50_v1_1024x1024_coco17_tpu-8/pipeline.config\
+\
+\
+}
